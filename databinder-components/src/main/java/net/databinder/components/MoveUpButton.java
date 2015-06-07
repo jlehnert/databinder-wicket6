@@ -21,13 +21,13 @@ package net.databinder.components;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.request.resource.PackageResourceReference;
 
 /** Move the given list item up in its list. */
 public class MoveUpButton extends ListItemButton {
 	public MoveUpButton(String id, ListItem item) {
-		super(id, item, new ResourceReference(MoveUpButton.class, "image/up-arrow.png"));
+		super(id, item, new PackageResourceReference(MoveUpButton.class, "image/up-arrow.png"));
 	}
 	@Override
 	public void onSubmit() {

@@ -1,7 +1,7 @@
 package net.databinder.models.hib;
 
 
-import org.apache.wicket.util.lang.PropertyResolver;
+import org.apache.wicket.core.util.lang.PropertyResolver;
 import org.hibernate.Query;
 
 /**

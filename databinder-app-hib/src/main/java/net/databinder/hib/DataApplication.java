@@ -22,14 +22,12 @@ package net.databinder.hib;
 import java.util.HashMap;
 
 import net.databinder.DataApplicationBase;
-import net.databinder.components.hib.DataBrowser;
 
-import org.apache.wicket.Application;
-import org.apache.wicket.Request;
-import org.apache.wicket.RequestCycle;
-import org.apache.wicket.Response;
 import org.apache.wicket.WicketRuntimeException;
-import org.apache.wicket.protocol.http.WebRequest;
+import org.apache.wicket.request.Request;
+import org.apache.wicket.request.Response;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.http.WebRequest;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 
@@ -54,30 +52,9 @@ public abstract class DataApplication extends DataApplicationBase implements Hib
 	 */
 	protected void dataInit() {
 		buildHibernateSessionFactory(null);
-		if (isDataBrowserAllowed())
-			mountDataBrowser();
+		getRequestCycleListeners().add(new DataRequestCycleListener());
 	}
 	
-	/**
-	 * Bookmarkable subclass of DataBrowser page. Access to the page is permitted
-	 * only if the current application is assignable to DataApplication
-	 * and returns true for isDataBrowserAllowed().
-	 * @see DataBrowser
-	 */
-	public static class BmarkDataBrowser extends DataBrowser {
-		public BmarkDataBrowser() {
-			super(((DataApplication)Application.get()).isDataBrowserAllowed());
-		}
-	}
-	
-	/**
-	 * Mounts Data Diver to /dbrowse. Override to mount elsewhere, or not mount at all.
-	 * This method is only called if isDataBrowserAllowed() returns true in init().
-	 */
-	protected void mountDataBrowser() {
-		mountBookmarkablePage("/dbrowse", BmarkDataBrowser.class);
-	}
-
 	/**
 	 * Called by init to create Hibernate session factory and load a configuration. Passes
 	 * an empty new AnnotationConfiguration to buildHibernateSessionFactory(key, config) by 
@@ -166,22 +143,5 @@ public abstract class DataApplication extends DataApplicationBase implements Hib
 	protected void setHibernateSessionFactory(Object key, SessionFactory sf) {
 		hibernateSessionFactories.put(key, sf);
 	}
-
 	
-	/**
-	 * @return a DataRequestCycle
-	 * @see DataRequestCycle
-	 */
-	@Override
-	public RequestCycle newRequestCycle(Request request, Response response) {
-		return new DataRequestCycle(this, (WebRequest) request, response);
-	}
-	
-	/**
-	 * Returns true if development mode is enabled. Override for other behavior.
-	 * @return true if the Data Browser page should be enabled
-	 */
-	protected boolean isDataBrowserAllowed() {
-		return isDevelopment();
-	}
 }

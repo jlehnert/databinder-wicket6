@@ -35,7 +35,7 @@ import org.hibernate.criterion.Order;
  * 
  * Avoids problems with duplicate Aliases by having all the Criteria building code in one location.
  */
-public abstract class BaseCriteriaBuildAndSort implements OrderingCriteriaBuilder, Serializable {
+public abstract class BaseCriteriaBuildAndSort<S> implements OrderingCriteriaBuilder, Serializable {
 
 	protected Set<String> aliases = new HashSet<String>();
 

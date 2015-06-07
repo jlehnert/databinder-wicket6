@@ -18,24 +18,28 @@
  */
 package net.databinder.auth.components;
 
-import net.databinder.auth.AuthSession;
 import net.databinder.auth.AuthApplication;
+import net.databinder.auth.AuthSession;
 import net.databinder.auth.data.DataUser;
-import net.databinder.components.DataStyleLink;
 import net.databinder.components.SourceList;
 
 import org.apache.wicket.Application;
 import org.apache.wicket.Component;
-import org.apache.wicket.IClusterable;
 import org.apache.wicket.Page;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.Session;
 import org.apache.wicket.authorization.UnauthorizedInstantiationException;
-import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.core.request.handler.PageProvider;
+import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
+import org.apache.wicket.markup.head.CssHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.request.resource.CssResourceReference;
+import org.apache.wicket.util.io.IClusterable;
 
 /**
  * Sign in and registration page.
@@ -75,8 +79,8 @@ public abstract class DataSignInPageBase<T extends DataUser> extends WebPage {
 			throw new UnauthorizedInstantiationException(DataSignInPageBase.class);
 
 		if (params != null) {
-			String username = params.getString("username");
-			String token = params.getString("token");
+			String username = params.get("username").toString();
+			String token = params.get("token").toString();
 			// e-mail auth, for example
 			if (username != null && token != null) {
 				T user = app.getUser(username);
@@ -84,14 +88,12 @@ public abstract class DataSignInPageBase<T extends DataUser> extends WebPage {
 				if (user != null && app.getToken(user).equals(token))
 					getAuthSession().signIn(user, true);
 				setResponsePage(((Application)app).getHomePage());
-				setRedirect(true);
+				RequestCycle.get().scheduleRequestHandlerAfterCurrent(new RenderPageRequestHandler(new PageProvider(((Application)app).getHomePage(), params), RenderPageRequestHandler.RedirectPolicy.NEVER_REDIRECT));
 				return;
 			}
 		}
 		
 		add(new Label("title", new ResourceModel("data.auth.title.sign_in", "Please sign in")));
-
-		add(new DataStyleLink("dataStylesheet"));
 		
 		sourceList = new SourceList();
 		
@@ -137,5 +139,10 @@ public abstract class DataSignInPageBase<T extends DataUser> extends WebPage {
 	/** @return casted session */
 	protected AuthSession<T> getAuthSession() {
 		return (AuthSession<T>) Session.get();
+	}
+	
+	@Override
+	public void renderHead(IHeaderResponse response) {
+		response.render(CssHeaderItem.forReference(new CssResourceReference(DataSignInPageBase.class, "DataSignInPage.css")));
 	}
 }

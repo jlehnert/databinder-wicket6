@@ -1,9 +1,11 @@
 package net.databinder.components;
 
-import org.apache.wicket.ResourceReference;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.ComponentTag;
-import org.apache.wicket.markup.html.IHeaderResponse;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.JavaScriptHeaderItem;
+import org.apache.wicket.request.resource.JavaScriptResourceReference;
 
 /*
  * Databinder: a simple bridge from Wicket to Hibernate
@@ -33,9 +35,6 @@ import org.apache.wicket.markup.html.IHeaderResponse;
  */
 public abstract class AjaxOnKeyPausedUpdater extends AjaxFormComponentUpdatingBehavior {
 
-	private static final ResourceReference JAVASCRIPT = new ResourceReference(
-			AjaxOnKeyPausedUpdater.class, "AjaxOnKeyPausedUpdater.js");
-
 	/**
 	 * Binds to onchange.
 	 */
@@ -47,9 +46,9 @@ public abstract class AjaxOnKeyPausedUpdater extends AjaxFormComponentUpdatingBe
 	 * Adds needed JavaScript to header.
 	 */
 	@Override
-	public void renderHead(IHeaderResponse response) {
-		super.renderHead(response);
-		response.renderJavascriptReference(JAVASCRIPT);
+	public void renderHead(final Component component, IHeaderResponse response) {
+		super.renderHead(component, response);
+		response.render(JavaScriptHeaderItem.forReference(new JavaScriptResourceReference(AjaxOnKeyPausedSubmitter.class, "AjaxOnKeyPausedUpdater.js")));
 	}
 
 	/**

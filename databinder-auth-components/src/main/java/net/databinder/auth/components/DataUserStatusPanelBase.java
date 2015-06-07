@@ -24,8 +24,7 @@ import net.databinder.auth.components.DataSignInPageBase.ReturnPage;
 import net.databinder.auth.data.DataUser;
 
 import org.apache.wicket.Page;
-import org.apache.wicket.authorization.strategies.role.Roles;
-import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.authroles.authorization.strategies.role.Roles;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;

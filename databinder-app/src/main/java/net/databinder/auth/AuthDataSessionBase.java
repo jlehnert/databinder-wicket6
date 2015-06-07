@@ -24,17 +24,17 @@ import java.net.URLEncoder;
 
 import javax.servlet.http.Cookie;
 
-import net.databinder.CookieRequestCycle;
 import net.databinder.auth.data.DataUser;
 
 import org.apache.wicket.Application;
-import org.apache.wicket.Request;
-import org.apache.wicket.RequestCycle;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.protocol.http.WebSession;
+import org.apache.wicket.request.Request;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.http.WebRequest;
+import org.apache.wicket.request.http.WebResponse;
 import org.apache.wicket.util.time.Duration;
 
 /**
@@ -135,10 +135,10 @@ public abstract class AuthDataSessionBase<T extends DataUser> extends WebSession
 	 * @return true if signed in, false if credentials incorrect or unavailable
 	 */
 	protected boolean cookieSignIn() {
-		CookieRequestCycle requestCycle = (CookieRequestCycle) RequestCycle.get();
-		Cookie userCookie = requestCycle.getCookie(getUserCookieName()),
-			token = requestCycle.getCookie(getAuthCookieName());
-
+		WebRequest webRequest = (WebRequest)RequestCycle.get().getRequest();
+		Cookie userCookie = webRequest.getCookie(getUserCookieName());
+		Cookie token = webRequest.getCookie(getAuthCookieName());
+		
 		if (userCookie != null && token != null) {
 			T potential;
 			try {
@@ -184,7 +184,6 @@ public abstract class AuthDataSessionBase<T extends DataUser> extends WebSession
 			throw new WicketRuntimeException("User must be signed in when calling this method");
 		
 		T cookieUser = getUser();
-		WebResponse resp = (WebResponse) RequestCycle.get().getResponse();
 		
 		Cookie name, auth;
 		try {
@@ -198,23 +197,17 @@ public abstract class AuthDataSessionBase<T extends DataUser> extends WebSession
 		int  maxAge = (int) getSignInCookieMaxAge().seconds();
 		name.setMaxAge(maxAge);
 		auth.setMaxAge(maxAge);
-
-		RequestCycle rc = RequestCycle.get();
-		if (rc instanceof CookieRequestCycle) {
-			CookieRequestCycle cookieRc = (CookieRequestCycle) rc;
-			cookieRc.applyScope(name);
-			cookieRc.applyScope(auth);
-		}
 		
-		resp.addCookie(name);
-		resp.addCookie(auth);
+		WebResponse webResponse = (WebResponse)RequestCycle.get().getResponse();		 
+		webResponse.addCookie(name);
+		webResponse.addCookie(auth);
 	}
 	
 	/**
 	 * Detach userModel manually, as it isnt' attached to any component.
 	 */
 	@Override
-	protected void detach() {
+	public void detach() {
 		if (userModel != null)
 			userModel.detach();
 	}
@@ -222,9 +215,15 @@ public abstract class AuthDataSessionBase<T extends DataUser> extends WebSession
 	/** Nullifies userModela nd clears authentication cookies. */
 	protected void clearUser() {
 		userModel = null;
-		CookieRequestCycle requestCycle = (CookieRequestCycle) RequestCycle.get();
-		requestCycle.clearCookie(getUserCookieName());
-		requestCycle.clearCookie(getAuthCookieName());
+
+		WebResponse webResponse = (WebResponse)RequestCycle.get().getResponse();
+		WebRequest webRequest = (WebRequest)RequestCycle.get().getRequest();
+		
+		Cookie userCookie = webRequest.getCookie(getUserCookieName());
+		Cookie token = webRequest.getCookie(getAuthCookieName());
+		
+		webResponse.clearCookie(userCookie);
+		webResponse.clearCookie(token);		
   }	  
 
   /** Signs out and invalidates session. */	

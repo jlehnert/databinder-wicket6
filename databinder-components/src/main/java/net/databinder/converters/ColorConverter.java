@@ -23,7 +23,7 @@ import java.awt.Color;
 import java.util.Locale;
 
 import org.apache.wicket.util.convert.ConversionException;
-import org.apache.wicket.util.convert.converters.AbstractConverter;
+import org.apache.wicket.util.convert.converter.AbstractConverter;
 import org.apache.wicket.util.string.Strings;
 
 /**

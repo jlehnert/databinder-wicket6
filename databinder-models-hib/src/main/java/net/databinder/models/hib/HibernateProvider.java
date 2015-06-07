@@ -162,13 +162,13 @@ public class HibernateProvider<T> extends PropertyDataProvider<T> {
 	 * It should not normally be necessary to override (or call) this default implementation.
 	 */
 	@SuppressWarnings("unchecked")
-	public Iterator<T> iterator(int first, int count) {
+	public Iterator<T> iterator(long first, long count) {
 		Session sess =  Databinder.getHibernateSession(factoryKey);
 		
 		if(queryBuilder != null) {
 			org.hibernate.Query q = queryBuilder.build(sess);
-			q.setFirstResult(first);
-			q.setMaxResults(count);
+			q.setFirstResult((int)first); //FIXME
+			q.setMaxResults((int)count); //FIXME
 			return q.iterate();
 		}			
 		
@@ -176,8 +176,8 @@ public class HibernateProvider<T> extends PropertyDataProvider<T> {
 		if (criteriaBuilder != null)
 			criteriaBuilder.buildOrdered(crit);
 		
-		crit.setFirstResult(first);
-		crit.setMaxResults(count);
+		crit.setFirstResult((int)first);//FIXME
+		crit.setMaxResults((int)count); //FIXME
 		return crit.list().iterator();
 	}
 	
@@ -185,7 +185,7 @@ public class HibernateProvider<T> extends PropertyDataProvider<T> {
 	 * Only override this method if a single count query or 
 	 * criteria projection is not possible.
 	 */
-	public int size() {
+	public long size() {
 		Session sess =  Databinder.getHibernateSession(factoryKey);
 
 		if(countQueryBuilder != null) {
@@ -199,7 +199,7 @@ public class HibernateProvider<T> extends PropertyDataProvider<T> {
 		if (criteriaBuilder != null)
 			criteriaBuilder.buildUnordered(crit);
 		crit.setProjection(Projections.rowCount());
-		Integer size = (Integer) crit.uniqueResult();
+		Long size = (Long) crit.uniqueResult();
 		return size == null ? 0 : size;
 	}
 

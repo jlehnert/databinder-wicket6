@@ -1,9 +1,10 @@
 package net.databinder.components;
 
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.markup.html.form.ImageButton;
 import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
 
 /**
  * Base class for item buttons, whether ListItem or repeater Item.
@@ -21,6 +22,6 @@ public abstract class BaseItemButton extends ImageButton {
 	}
 	
 	protected static ResourceReference getTrashImage() {
-		return new ResourceReference(BaseItemButton.class, "image/trash.png");
+		return new PackageResourceReference(BaseItemButton.class, "image/trash.png");
 	}
 }

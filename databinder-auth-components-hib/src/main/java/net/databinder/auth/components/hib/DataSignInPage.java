@@ -3,7 +3,7 @@ package net.databinder.auth.components.hib;
 import net.databinder.auth.components.DataSignInPageBase;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.PageParameters;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
  * Sign in and registration page.

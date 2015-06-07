@@ -34,8 +34,8 @@ import org.hibernate.criterion.Order;
  * 
  * @author Mark Southern
  */
-public abstract class CriteriaBuildAndSort extends BaseCriteriaBuildAndSort implements ISortStateLocator {
-	private SingleSortState sortState = new SingleSortState();
+public abstract class CriteriaBuildAndSort<S> extends BaseCriteriaBuildAndSort implements ISortStateLocator<S> {
+	private SingleSortState<S> sortState = new SingleSortState<S>();
 
 	public CriteriaBuildAndSort(final String defaultSortProperty, final boolean sortAscending, final boolean sortCased) {
 		super(defaultSortProperty, sortAscending, sortCased);
@@ -45,10 +45,10 @@ public abstract class CriteriaBuildAndSort extends BaseCriteriaBuildAndSort impl
 	public void buildOrdered(final Criteria criteria) {
 		buildUnordered(criteria);
 
-		SortParam sort = sortState.getSort();
+		SortParam<S> sort = sortState.getSort();
 		String property;
 		if (sort != null && sort.getProperty() != null) {
-			property = sort.getProperty();
+			property = (String) sort.getProperty(); //FIXME
 			sortAscending = sort.isAscending();
 		}
 		else {
@@ -63,11 +63,11 @@ public abstract class CriteriaBuildAndSort extends BaseCriteriaBuildAndSort impl
 		}
 	}
 
-	public ISortState getSortState() {
+	public ISortState<S> getSortState() {
 		return sortState;
 	}
 
-	public void setSortState(final ISortState state) {
-		sortState = (SingleSortState) state;
+	public void setSortState(final ISortState<S> state) {
+		sortState = (SingleSortState<S>) state;
 	}
 }

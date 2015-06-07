@@ -51,6 +51,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.ValidationError;
 import org.apache.wicket.validation.validator.StringValidator;
 
 /**
@@ -170,8 +171,7 @@ public abstract class DataProfilePanelBase<T extends DataUser> extends Panel {
 		getAuthSession().signIn(getUser(), (Boolean) rememberMe.getModelObject());
 
 		if (returnPage == null) {
-			if (!continueToOriginalDestination())
-				setResponsePage(getApplication().getHomePage());
+			continueToOriginalDestination();
 		} else
 			setResponsePage(returnPage.get());
 	}
@@ -188,12 +188,13 @@ public abstract class DataProfilePanelBase<T extends DataUser> extends Panel {
 	/** Username is valid if isAvailable(username) returns true */
 	public static class UsernameValidator extends StringValidator {
 		@Override
-		protected void onValidate(IValidatable validatable) {
+		public void validate(IValidatable validatable) {
 			String username = (String) validatable.getValue();
 			if (username != null && !isAvailable(username)) {
 				Map<String, Object> m = new HashMap<String, Object>(1);
 				m.put("username", username);
-				error(validatable,"data.auth.username.taken",  m);
+				//error(validatable,"data.auth.username.taken",  m);
+				validatable.error(new ValidationError("Kaputt")); //FIXME
 			}
 		}
 	}

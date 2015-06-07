@@ -31,8 +31,8 @@ import org.apache.wicket.Application;
 import org.apache.wicket.Session;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.IFilterStateLocator;
 import org.apache.wicket.util.convert.ConversionException;
-import org.apache.wicket.util.lang.PropertyResolver;
-import org.apache.wicket.util.lang.PropertyResolverConverter;
+import org.apache.wicket.core.util.lang.PropertyResolver;
+import org.apache.wicket.core.util.lang.PropertyResolverConverter;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Disjunction;
@@ -67,11 +67,11 @@ public class CriteriaFilterAndSort extends CriteriaBuildAndSort implements IFilt
 
     private Map<String, String> filterMap = new HashMap<String, String>();
 
-    private Object bean;
+    private Class beanClass;
 
-    public CriteriaFilterAndSort(Object bean, String defaultSortProperty, boolean sortAscending, boolean sortCased) {
+    public CriteriaFilterAndSort(Class beanClass, String defaultSortProperty, boolean sortAscending, boolean sortCased) {
         super(defaultSortProperty, sortAscending, sortCased);
-        this.bean = bean;
+        this.beanClass = beanClass;
     }
 
     public void buildUnordered(Criteria criteria) {
@@ -87,7 +87,7 @@ public class CriteriaFilterAndSort extends CriteriaBuildAndSort implements IFilt
                 continue;
 
             String prop = processProperty(criteria, property);
-            Class clazz = PropertyResolver.getPropertyClass(property, bean);
+            Class clazz = PropertyResolver.getPropertyClass(property, beanClass);
 
             if (String.class.isAssignableFrom(clazz)) {
                 String[] items = value.split("\\s+");

@@ -19,6 +19,7 @@
 package net.databinder.components;
 
 import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.markup.head.OnLoadHeaderItem;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.internal.HtmlHeaderContainer;
 import org.apache.wicket.model.IModel;
@@ -36,7 +37,6 @@ public class FocusableTextField<T> extends TextField<T> {
 	 */
 	public FocusableTextField(String id, IModel<T> model) {
 		super (id, model);
-		add(ScriptLink.headerContributor(FocusableTextField.class));
 	}
 
 	/**
@@ -49,7 +49,7 @@ public class FocusableTextField<T> extends TextField<T> {
 	@Override
 	public void renderHead(HtmlHeaderContainer container) {
 		super.renderHead(container);
-		container.getHeaderResponse().renderOnLoadJavascript("initFocusableTextField();");
+		container.getHeaderResponse().render(new OnLoadHeaderItem("initFocusableTextField();"));
 	}
 	
 	/**

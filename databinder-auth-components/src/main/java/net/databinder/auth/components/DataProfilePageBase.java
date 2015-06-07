@@ -19,12 +19,15 @@
 package net.databinder.auth.components;
 
 import net.databinder.auth.components.DataSignInPageBase.ReturnPage;
-import net.databinder.components.DataStyleLink;
+import net.databinder.components.TagField;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.markup.head.CssHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.request.resource.CssResourceReference;
 
 /**
  * Display profile editing page for logged in user. 
@@ -35,10 +38,14 @@ import org.apache.wicket.model.ResourceModel;
 public abstract class DataProfilePageBase extends WebPage {
 	public DataProfilePageBase(ReturnPage returnPage) {
 		add(new Label("title", new ResourceModel("data.auth.title.update", "Update Account")));
-		add(new DataStyleLink("dataStylesheet"));
 		add(new Label("text", new ResourceModel("data.auth.update", "Update Account")));
 		add(profileSocket("profileSocket", returnPage));
 	}
 	/** @return component to appear as the body of this page. */
 	protected abstract Component profileSocket(String id, ReturnPage returnPage);
+	
+	@Override
+	public void renderHead(IHeaderResponse response) {
+		response.render(CssHeaderItem.forReference(new CssResourceReference(TagField.class, "DataStyleSheet.css")));
+	}
 }

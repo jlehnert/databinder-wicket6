@@ -97,8 +97,7 @@ public class DataSignInPanel<T extends DataUser> extends Panel {
 					(Boolean)rememberMe.getModelObject()))
 			{
 				if (returnPage == null) {
-					if (!continueToOriginalDestination())
-						setResponsePage(getApplication().getHomePage());
+					continueToOriginalDestination();
 				} else
 					setResponsePage(returnPage.get());
 			} else

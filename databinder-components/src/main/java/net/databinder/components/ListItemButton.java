@@ -18,9 +18,9 @@
  */
 package net.databinder.components;
 
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.request.resource.ResourceReference;
 
 /** Base class for buttons that act on list items (move, delete). */
 public abstract class ListItemButton extends BaseItemButton {

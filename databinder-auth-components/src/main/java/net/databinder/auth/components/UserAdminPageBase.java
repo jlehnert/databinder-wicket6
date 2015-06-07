@@ -3,21 +3,21 @@ package net.databinder.auth.components;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.zip.DataFormatException;
 
 import net.databinder.auth.AuthApplication;
 import net.databinder.auth.AuthSession;
 import net.databinder.auth.data.DataUser;
 import net.databinder.auth.valid.EqualPasswordConvertedInputValidator;
-import net.databinder.components.DataStyleLink;
 import net.databinder.components.ModelSourceListPanel;
 import net.databinder.components.NullPlug;
 import net.databinder.components.UnbindLink;
 import net.databinder.models.BindingModel;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.authorization.strategies.role.Roles;
-import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.authroles.authorization.strategies.role.Roles;
+import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.markup.head.CssHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
@@ -32,6 +32,7 @@ import org.apache.wicket.model.IChainingModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.request.resource.CssResourceReference;
 
 /**
  * User administration page. Lists all users, allows editing usernames, passwords, and roles.
@@ -54,7 +55,6 @@ public abstract class UserAdminPageBase<T extends DataUser> extends WebPage {
 	}
 
 	public UserAdminPageBase() {
-		add(new DataStyleLink("css"));
 		add(new Label("title", new ResourceModel("data.auth.user_admin", "User Administration")));
 		add(new Label("heading", new ResourceModel("data.auth.user_admin", "User Administration")));
 		Class<T> userClass =  ((AuthApplication<T>) getApplication()).getUserClass();
@@ -109,6 +109,11 @@ public abstract class UserAdminPageBase<T extends DataUser> extends WebPage {
 			.add(new Label("text", new ResourceModel("data.auth.user_add", "Add new user"))));
 				
 		add(new ModelSourceListPanel<T>("users", form, "username", userList(userClass)));
+	}
+	
+	@Override
+	public void renderHead(IHeaderResponse response) {
+		response.render(CssHeaderItem.forReference(new CssResourceReference(UserAdminPageBase.class, "UserAdminPage.css")));
 	}
 	
 	protected T getUser() {

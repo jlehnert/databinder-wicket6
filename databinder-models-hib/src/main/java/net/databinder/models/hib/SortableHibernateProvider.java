@@ -19,8 +19,10 @@ package net.databinder.models.hib;
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-import org.apache.wicket.extensions.markup.html.repeater.data.table.*;
-import org.apache.wicket.extensions.markup.html.repeater.data.sort.*;
+import org.apache.wicket.extensions.markup.html.repeater.data.sort.ISortState;
+import org.apache.wicket.extensions.markup.html.repeater.data.sort.ISortStateLocator;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.ISortableDataProvider;
+import org.apache.wicket.extensions.markup.html.repeater.util.SingleSortState;
 
 /**
  * <h1>SortableHibernateProvider</h1>
@@ -31,7 +33,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.sort.*;
  * @author Mark Southern (southern at scripps dot edu)
  */
 
-public class SortableHibernateProvider<T> extends HibernateProvider<T> implements ISortableDataProvider<T> {
+public class SortableHibernateProvider<T> extends HibernateProvider<T> implements ISortableDataProvider<T,String> {
 
     private ISortStateLocator sortStateLocator = null;
 
@@ -49,16 +51,7 @@ public class SortableHibernateProvider<T> extends HibernateProvider<T> implement
             sortStateLocator = (ISortStateLocator) criteriaBuilder;
     }
 
-    public ISortState getSortState() {
+    public ISortState<String> getSortState() {
         return (sortStateLocator != null) ? sortStateLocator.getSortState() : sortState;
-    }
-
-    public void setSortState(ISortState state) {
-        if (sortStateLocator != null) {
-            sortStateLocator.setSortState(state);
-        }
-        else {
-            this.sortState = state;
-        }
     }
 }
