@@ -6,6 +6,9 @@ http://databinder.net/
 
 Version History
 
+6.0.0 Migrated to Wicket 6.19.0 and Hibernate 4
+      Deleted all components not related to hibernate
+
 1.2.1 Updates Databinder to the latest Wicket and Hibernate versions.
 
 1.2 This release represents a significant refactor of the Databinder toolkit to allow it to work with any underlying persistence technology. Core functionality now resides in modules like databinder-models, while specific functionality is in databinder-models-hib for Hibernate, or databinder-models-ao for ActiveObjects. The "databinder" dependency that was used through 1.1 is now databinder-app and databinder-app-hib for Hibernate applications.
